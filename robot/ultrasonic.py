@@ -1,12 +1,18 @@
 """
-HC-SR04 ultrasonic distance sensor abstraction.
+HC-SR04 ultrasonic distance sensor + the servo "head" it sits on.
 
-Requires robot.pins.ULTRASONIC_TRIG and ULTRASONIC_ECHO to be filled in.
+  Ultrasonic     – the distance sensor itself (TRIG/ECHO pins)
+  UltrasonicHead – the servo that swivels the sensor left/right
+                   (ULTRASONIC_SERVO, BCM 5)
+
+Requires robot.pins.ULTRASONIC_TRIG and ULTRASONIC_ECHO to be filled in
+before using Ultrasonic. UltrasonicHead has no pin TODOs.
 """
 
 import RPi.GPIO as GPIO
 import time
 from robot import pins
+from robot.servo import Servo
 
 TRIG_PULSE_S  = 10e-6    # 10 µs
 SPEED_SOUND   = 343.0    # m/s at ~20 °C
@@ -62,6 +68,38 @@ class Ultrasonic:
         GPIO.cleanup([self._trig, self._echo])
 
     def __enter__(self) -> "Ultrasonic":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.cleanup()
+
+
+class UltrasonicHead:
+    """The pan servo that swivels the HC-SR04 left/right."""
+
+    def __init__(self, pin: int | None = None, initial_angle: float = 90.0) -> None:
+        self._servo = Servo(
+            pin if pin is not None else pins.ULTRASONIC_SERVO,
+            initial_angle,
+        )
+
+    @property
+    def pan(self) -> float:
+        return self._servo.angle
+
+    def set_pan(self, angle: float) -> None:
+        self._servo.set_angle(angle)
+
+    def nudge(self, delta: float) -> None:
+        self.set_pan(self.pan + delta)
+
+    def centre(self) -> None:
+        self._servo.centre()
+
+    def cleanup(self) -> None:
+        self._servo.cleanup()
+
+    def __enter__(self) -> "UltrasonicHead":
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:

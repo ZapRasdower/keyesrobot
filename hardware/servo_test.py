@@ -2,10 +2,10 @@
 """
 Servo bring-up test for KS0223F Smart Car.
 
-Verified BCM pins from RaspberryPiCar/RaspberryPi-Car/MainControl.py:
-  servoPin1 = BCM 5  (camera tilt or pan 1)
-  servoPin2 = BCM 6  (camera tilt or pan 2)
-  servoPin3 = BCM 7  (steering servo)
+Verified BCM pins (vendor source + empirical bring-up):
+  BCM 5  → ULTRASONIC_SERVO  (sweeps the HC-SR04 sensor)
+  BCM 6  → CAMERA_SERVO      (camera tilt)
+  BCM 7  → STEERING_SERVO    (front-wheel steering)
 
 Standard servo PWM: 50 Hz, pulse width 0.5 ms (0°) to 2.5 ms (180°)
 Duty cycle at 50 Hz period (20 ms):
@@ -18,9 +18,9 @@ import RPi.GPIO as GPIO
 import time
 
 SERVO_PINS = {
-    "servo1": 5,
-    "servo2": 6,
-    "servo3": 7,
+    "ultrasonic": 5,
+    "camera":     6,
+    "steering":   7,
 }
 
 PWM_FREQ = 50  # Hz

@@ -7,11 +7,11 @@ Status legend:
 """
 
 # ---------------------------------------------------------------------------
-# Servos  (CONFIRMED – MainControl.py)
+# Servos  (CONFIRMED – MainControl.py + empirical bring-up)
 # ---------------------------------------------------------------------------
-SERVO1 = 5   # camera pan / tilt 1
-SERVO2 = 6   # camera pan / tilt 2
-SERVO3 = 7   # steering servo
+ULTRASONIC_SERVO = 5   # sweeps the HC-SR04 left/right (the "eyes")
+CAMERA_SERVO     = 6   # camera tilt up/down
+STEERING_SERVO   = 7   # front-wheel steering
 
 # ---------------------------------------------------------------------------
 # Motor direction control  (CONFIRMED – MainControl.py, bp12_avoid_car.py)

@@ -54,19 +54,24 @@ Use `rpicam-*` commands (not `libcamera-*`) on this OS:
 rpicam-still -o test.jpg
 ```
 
-### Camera servo apps
+### Camera (tilt only) and ultrasonic head (pan only)
 
-Camera pan/tilt is on SERVO1 (pan) and SERVO2 (tilt). Four CLIs:
+The kit has three servos: camera tilt, ultrasonic-sensor pan ("eyes"),
+and steering. Camera + eyes each get a small CLI suite.
 
+Camera tilt:
 ```bash
-python3 -m run.camera_set --pan 120 --tilt 60    # one-shot, scriptable
+python3 -m run.camera_set --tilt 60       # one-shot, scriptable
 python3 -m run.camera_set --centre
-
-python3 -m run.camera_aim                         # interactive (arrows / hjkl)
-
-python3 -m run.camera_sweep                       # sweep both axes, sanity check
-
-python3 -m run.camera_snap --pan 90 --tilt 70 -o shot.jpg
+python3 -m run.camera_aim                 # interactive (↑/↓ or k/j)
+python3 -m run.camera_sweep               # range sweep, sanity check
+python3 -m run.camera_snap --tilt 70 -o shot.jpg
 ```
 
-If pan/tilt feel swapped, swap `SERVO1` and `SERVO2` in `robot/pins.py`.
+Ultrasonic head pan:
+```bash
+python3 -m run.eyes_set --pan 45          # look hard left
+python3 -m run.eyes_set --centre
+python3 -m run.eyes_aim                   # interactive (←/→ or h/l)
+python3 -m run.eyes_sweep                 # range sweep
+```

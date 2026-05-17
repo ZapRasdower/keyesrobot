@@ -1,9 +1,10 @@
 """
-Camera pan/tilt mount abstraction.
+Camera mount abstraction.
 
-Defaults: SERVO1 = pan (horizontal), SERVO2 = tilt (vertical).
-If your physical mounting is reversed, either swap pin assignments in
-robot/pins.py or pass explicit pins to CameraMount(pan_pin=..., tilt_pin=...).
+The KS0223F camera is on a single tilt servo (pin CAMERA_SERVO, BCM 6).
+There is no camera pan servo on this kit — horizontal sweep is provided
+by the ultrasonic head (see robot.ultrasonic.UltrasonicHead) or by
+turning the whole car.
 """
 
 from robot import pins
@@ -11,39 +12,27 @@ from robot.servo import Servo
 
 
 class CameraMount:
-    def __init__(
-        self,
-        pan_pin: int | None = None,
-        tilt_pin: int | None = None,
-        pan_angle: float = 90.0,
-        tilt_angle: float = 90.0,
-    ) -> None:
-        self.pan = Servo(pan_pin if pan_pin is not None else pins.SERVO1, pan_angle)
-        self.tilt = Servo(tilt_pin if tilt_pin is not None else pins.SERVO2, tilt_angle)
-
-    def set_pan(self, angle: float) -> None:
-        self.pan.set_angle(angle)
-
-    def set_tilt(self, angle: float) -> None:
-        self.tilt.set_angle(angle)
-
-    def aim(self, pan: float | None = None, tilt: float | None = None) -> None:
-        if pan is not None:
-            self.set_pan(pan)
-        if tilt is not None:
-            self.set_tilt(tilt)
-
-    def centre(self) -> None:
-        self.pan.centre()
-        self.tilt.centre()
+    def __init__(self, pin: int | None = None, initial_angle: float = 90.0) -> None:
+        self._servo = Servo(
+            pin if pin is not None else pins.CAMERA_SERVO,
+            initial_angle,
+        )
 
     @property
-    def angles(self) -> tuple[float, float]:
-        return self.pan.angle, self.tilt.angle
+    def tilt(self) -> float:
+        return self._servo.angle
+
+    def set_tilt(self, angle: float) -> None:
+        self._servo.set_angle(angle)
+
+    def nudge(self, delta: float) -> None:
+        self.set_tilt(self.tilt + delta)
+
+    def centre(self) -> None:
+        self._servo.centre()
 
     def cleanup(self) -> None:
-        self.pan.cleanup()
-        self.tilt.cleanup()
+        self._servo.cleanup()
 
     def __enter__(self) -> "CameraMount":
         return self

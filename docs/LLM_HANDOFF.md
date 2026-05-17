@@ -54,9 +54,9 @@ See `docs/pin_mapping.md` for full table. Short version:
 
 | Group | Pin | BCM | Status |
 |-------|-----|-----|--------|
-| Servo 1 | SERVO1 | 5 | ✅ confirmed |
-| Servo 2 | SERVO2 | 6 | ✅ confirmed |
-| Servo 3 | SERVO3 | 7 | ✅ confirmed |
+| Ultrasonic head | ULTRASONIC_SERVO | 5 | ✅ confirmed (empirical) |
+| Camera tilt     | CAMERA_SERVO     | 6 | ✅ confirmed (empirical) |
+| Steering        | STEERING_SERVO   | 7 | ✅ confirmed |
 | Left fwd | L_IN1 | 20 | ✅ confirmed |
 | Left rev | L_IN2 | 21 | ✅ confirmed |
 | Right fwd | R_IN1 | 24 | ✅ confirmed |

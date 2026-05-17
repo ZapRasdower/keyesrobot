@@ -15,11 +15,13 @@ All pin numbers are **BCM GPIO** numbers (not physical/board numbers).
 
 | Name | BCM | Notes | Status |
 |------|-----|-------|--------|
-| SERVO1 | 5 | Camera/pan 1 | ✅ |
-| SERVO2 | 6 | Camera/pan 2 | ✅ |
-| SERVO3 | 7 | Steering servo | ✅ |
+| ULTRASONIC_SERVO | 5 | Sweeps the HC-SR04 sensor left/right | ✅ |
+| CAMERA_SERVO     | 6 | Camera tilt up/down                  | ✅ |
+| STEERING_SERVO   | 7 | Front-wheel steering                 | ✅ |
 
-Source: `MainControl.py`
+Source: `MainControl.py` + empirical bring-up (2026-05).
+The camera has only tilt on this kit (no pan); the HC-SR04 has only
+pan (no tilt).
 
 ---
 
