@@ -38,6 +38,15 @@ Confirmed: servos (5/6/7), motor direction (20/21/24/25).
 Pending: PWM speed pins, ultrasonic, tracking sensors.
 See `docs/pin_mapping.md` for the full table and grep commands.
 
+## Behaviours
+
+Once PWM and ultrasonic pins are filled in:
+
+```bash
+python3 -m run.avoid                # obstacle-avoidance, Ctrl+C to stop
+python3 -m run.avoid --seconds 30   # auto-stop after 30 s
+```
+
 ## Camera
 
 Use `rpicam-*` commands (not `libcamera-*`) on this OS:

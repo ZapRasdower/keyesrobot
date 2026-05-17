@@ -38,6 +38,12 @@ class Servo:
     def cleanup(self) -> None:
         self._pwm.stop()
 
+    def __enter__(self) -> "Servo":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.cleanup()
+
 
 class Servos:
     """Convenience wrapper for all three servos."""
@@ -56,3 +62,9 @@ class Servos:
         self.servo1.cleanup()
         self.servo2.cleanup()
         self.servo3.cleanup()
+
+    def __enter__(self) -> "Servos":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.cleanup()

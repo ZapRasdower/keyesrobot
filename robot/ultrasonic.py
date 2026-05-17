@@ -47,5 +47,22 @@ class Ultrasonic:
 
         return ((end - start) * SPEED_SOUND / 2.0) * 100.0
 
+    def distance_cm_median(self, samples: int = 5) -> float | None:
+        """Median of N pings; returns None if every ping timed out."""
+        if samples < 1:
+            raise ValueError("samples must be >= 1")
+        readings = [d for d in (self.distance_cm() for _ in range(samples))
+                    if d is not None]
+        if not readings:
+            return None
+        readings.sort()
+        return readings[len(readings) // 2]
+
     def cleanup(self) -> None:
         GPIO.cleanup([self._trig, self._echo])
+
+    def __enter__(self) -> "Ultrasonic":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.cleanup()

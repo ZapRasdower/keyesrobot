@@ -14,11 +14,19 @@ PWM_FREQ = 100  # Hz
 
 class Motors:
     def __init__(self) -> None:
+        self._dir_pins = [pins.L_IN1, pins.L_IN2, pins.R_IN1, pins.R_IN2]
+        missing = [name for name, val in zip(
+            ("L_IN1", "L_IN2", "R_IN1", "R_IN2"), self._dir_pins
+        ) if val is None]
+        if missing:
+            raise RuntimeError(
+                f"Motor direction pins not set in robot/pins.py: {missing}"
+            )
+
         self._pwm_pins = [
             p for p in [pins.L_PWM1, pins.L_PWM2, pins.R_PWM1, pins.R_PWM2]
             if p is not None
         ]
-        self._dir_pins = [pins.L_IN1, pins.L_IN2, pins.R_IN1, pins.R_IN2]
         self._pwms: dict[int, GPIO.PWM] = {}
 
         # Direction pins
@@ -77,6 +85,12 @@ class Motors:
         self.stop()
         for pwm in self._pwms.values():
             pwm.stop()
+
+    def __enter__(self) -> "Motors":
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.cleanup()
 
     # ------------------------------------------------------------------
     # Internal helpers
