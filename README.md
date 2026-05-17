@@ -53,3 +53,20 @@ Use `rpicam-*` commands (not `libcamera-*`) on this OS:
 ```bash
 rpicam-still -o test.jpg
 ```
+
+### Camera servo apps
+
+Camera pan/tilt is on SERVO1 (pan) and SERVO2 (tilt). Four CLIs:
+
+```bash
+python3 -m run.camera_set --pan 120 --tilt 60    # one-shot, scriptable
+python3 -m run.camera_set --centre
+
+python3 -m run.camera_aim                         # interactive (arrows / hjkl)
+
+python3 -m run.camera_sweep                       # sweep both axes, sanity check
+
+python3 -m run.camera_snap --pan 90 --tilt 70 -o shot.jpg
+```
+
+If pan/tilt feel swapped, swap `SERVO1` and `SERVO2` in `robot/pins.py`.
