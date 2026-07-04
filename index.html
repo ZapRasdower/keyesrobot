@@ -124,7 +124,8 @@
     <div class="dough"><span class="ic">🥟</span><span id="doughVal">0</span></div>
     <div class="hud-row">
       <div class="pill" id="rateP">⚡ <b id="rateVal">0</b>/s</div>
-      <div class="pill">🧸 <b id="cFound">0</b>/<span id="cTotal">32</span></div>
+      <div class="pill">🧸 <b id="cFound">0</b>/<span id="cTotal">48</span></div>
+      <div class="pill">✨ <b id="cShiny">0</b></div>
     </div>
   </div>
 </header>
@@ -141,6 +142,7 @@
   <div class="catstrip" id="catstrip"></div>
   <div class="dockrow">
     <button class="iconbtn" id="shelfBtn" title="shelf">📖</button>
+    <button class="iconbtn" id="achBtn" title="achievements">🏆</button>
     <button class="btn big" id="openBtn"><span id="openLabel">Open Box</span><span class="cost"><span>🥟</span><span id="openCost">0</span></span></button>
     <button class="iconbtn" id="shopBtn" title="upgrades">🛒</button>
   </div>
@@ -161,6 +163,15 @@
     <h2>📖 Pet Shelf</h2>
     <p class="hint">Tap any pet you've collected to bring it out and squish it (free).</p>
     <div id="shelfList"></div>
+  </div>
+</div>
+
+<div class="modal" id="achModal">
+  <div class="sheet">
+    <button class="close-x" data-close="achModal">✕</button>
+    <h2>🏆 Achievements</h2>
+    <p class="hint">Earn Dough rewards for squishy milestones.</p>
+    <div id="achList"></div>
   </div>
 </div>
 
@@ -194,7 +205,7 @@ const CATEGORIES=[
    {id:"chive",name:"Chive Pocket",rarity:"common",kind:"dumpling",squish:1.05,body:"#d7ecc0",shade:"#b3d693",hi:"#eef8e0",pleat:"#97c073"},
    {id:"shrimp",name:"Plump Har Gow",rarity:"uncommon",kind:"dumpling",squish:1.15,body:"#fac9cf",shade:"#f0a3ad",hi:"#ffe4e7",pleat:"#e58b97",glossy:true},
    {id:"soup",name:"Soup Bao",rarity:"uncommon",kind:"dumpling",squish:1.4,body:"#f6efdd",shade:"#e7dcbf",hi:"#fffaef",pleat:"#cdbf99",glossy:true,wobble:true},
-   {id:"gyoza",name:"Crispy Gyoza",rarity:"rare",kind:"dumpling",squish:.92,body:"#dca85e",shade:"#bd842f",hi:"#f0cf95",pleat:"#a06e26",crispy:true},
+   {id:"gyoza",name:"Crispy Gyoza",rarity:"rare",kind:"dumpling",squish:.92,shape:"wide",body:"#dca85e",shade:"#bd842f",hi:"#f0cf95",pleat:"#a06e26",crispy:true},
    {id:"galaxy",name:"Galaxy Dumpling",rarity:"epic",kind:"dumpling",squish:1.1,body:"#46367e",shade:"#2c2057",hi:"#7a68c4",pleat:"#6451a8",starry:true},
    {id:"royal",name:"Golden Royal Bun",rarity:"legendary",kind:"dumpling",squish:1.0,body:"#f6cb56",shade:"#e0a52c",hi:"#fff0b8",pleat:"#c98a18",crown:true,shiny:true},
   ]},
@@ -211,25 +222,47 @@ const CATEGORIES=[
   ]},
  {id:"mochi",name:"Sweet Shop",emoji:"🍡",accent:"#e07ab0",accentD:"#c65a96",boxBg:"#f3aacb",boxLid:"#e889b4",bg1:"#fdeef6",bg2:"#f7dcec",unlock:750,pull:90,
   pets:[
-   {id:"straw",name:"Strawberry Mochi",rarity:"common",kind:"mochi",squish:1.3,body:"#ffc6d9",shade:"#f098b6",hi:"#ffe1ea",dusting:true},
+   {id:"straw",name:"Strawberry Mochi",rarity:"common",kind:"mochi",squish:1.3,shape:"heart",body:"#ffc6d9",shade:"#f098b6",hi:"#ffe1ea",dusting:true},
    {id:"matcha",name:"Matcha Mochi",rarity:"common",kind:"mochi",squish:1.3,body:"#bcd99a",shade:"#97bd6e",hi:"#e0eecb",dusting:true},
-   {id:"vanilla",name:"Vanilla Dango",rarity:"common",kind:"mochi",squish:1.25,body:"#f6ecd6",shade:"#e3d2ac",hi:"#fff8ea",dusting:true},
+   {id:"vanilla",name:"Vanilla Dango",rarity:"common",kind:"mochi",squish:1.25,shape:"tall",body:"#f6ecd6",shade:"#e3d2ac",hi:"#fff8ea",dusting:true},
    {id:"icecream",name:"Mochi Ice Cream",rarity:"uncommon",kind:"mochi",squish:1.35,body:"#aee0e8",shade:"#7cc0cc",hi:"#d6f2f6",dusting:true,glossy:true},
    {id:"mango",name:"Mango Mochi",rarity:"uncommon",kind:"mochi",squish:1.3,body:"#ffd98a",shade:"#f2b44e",hi:"#fff0cc",dusting:true},
-   {id:"dora",name:"Dorayaki",rarity:"rare",kind:"mochi",squish:1.0,body:"#e8c28c",shade:"#c99a56",hi:"#f7dcab",band:true},
+   {id:"dora",name:"Dorayaki",rarity:"rare",kind:"mochi",squish:1.0,shape:"wide",body:"#e8c28c",shade:"#c99a56",hi:"#f7dcab",band:true},
    {id:"galmochi",name:"Galaxy Mochi",rarity:"epic",kind:"mochi",squish:1.25,body:"#c9b6ff",shade:"#9a7fe0",hi:"#e6dcff",starry:true,dusting:true},
    {id:"daifuku",name:"Royal Daifuku",rarity:"legendary",kind:"mochi",squish:1.2,body:"#fff4e0",shade:"#ecd9b0",hi:"#fffaf0",shiny:true,crown:true,dusting:true},
   ]},
  {id:"critter",name:"Critter Cove",emoji:"🐾",accent:"#7a9bd6",accentD:"#5a7bc0",boxBg:"#8fb0e0",boxLid:"#7396d6",bg1:"#eef3fb",bg2:"#dbe6f5",unlock:1900,pull:160,
   pets:[
-   {id:"bunny",name:"Bun Bunny",rarity:"common",kind:"critter",squish:1.1,body:"#fbf3e6",shade:"#e9dcc6",hi:"#fffaf0",ear:"long",earColor:"#f6e2d0",earInner:"#f0c0cc",nose:true},
-   {id:"cat",name:"Tubby Cat",rarity:"common",kind:"critter",squish:1.05,body:"#f3b46b",shade:"#dd9447",hi:"#fbd9a8",ear:"point",earColor:"#dd9447",earInner:"#f7c79a",nose:true,stripes:true},
-   {id:"frog",name:"Round Frog",rarity:"common",kind:"critter",squish:1.15,body:"#a7d98a",shade:"#7fbb63",hi:"#cdeeb3",ear:"round",earColor:"#a7d98a",wideEyes:true},
+   {id:"bunny",name:"Bun Bunny",rarity:"common",kind:"critter",squish:1.1,shape:"tall",body:"#fbf3e6",shade:"#e9dcc6",hi:"#fffaf0",ear:"long",earColor:"#f6e2d0",earInner:"#f0c0cc",nose:true},
+   {id:"cat",name:"Tubby Cat",rarity:"common",kind:"critter",squish:1.05,shape:"pear",body:"#f3b46b",shade:"#dd9447",hi:"#fbd9a8",ear:"point",earColor:"#dd9447",earInner:"#f7c79a",nose:true,stripes:true},
+   {id:"frog",name:"Round Frog",rarity:"common",kind:"critter",squish:1.15,shape:"wide",body:"#a7d98a",shade:"#7fbb63",hi:"#cdeeb3",ear:"round",earColor:"#a7d98a",wideEyes:true},
    {id:"bear",name:"Choco Bear",rarity:"uncommon",kind:"critter",squish:1.0,body:"#c79a6e",shade:"#a3784f",hi:"#e3c39a",ear:"round",earColor:"#a3784f",earInner:"#6f4f33",nose:true},
    {id:"fox",name:"Snow Fox",rarity:"uncommon",kind:"critter",squish:1.05,body:"#fbfbf7",shade:"#e1e1da",hi:"#ffffff",ear:"point",earColor:"#e8a06a",earInner:"#f6cfa8",nose:true},
    {id:"redpanda",name:"Red Panda",rarity:"rare",kind:"critter",squish:1.05,body:"#c8703f",shade:"#a4501f",hi:"#e6a06f",ear:"round",earColor:"#fff",earInner:"#caa",markings:true,nose:true},
    {id:"axolotl",name:"Galaxy Axolotl",rarity:"epic",kind:"critter",squish:1.2,body:"#b98ce6",shade:"#9a6fd6",hi:"#dcc4ff",ear:"frill",earColor:"#f48fc0",wideEyes:true,starry:true},
-   {id:"corgi",name:"Royal Corgi",rarity:"legendary",kind:"critter",squish:1.05,body:"#f3c878",shade:"#dba24e",hi:"#ffe6b0",ear:"point",earColor:"#dba24e",earInner:"#fff",nose:true,crown:true,shiny:true},
+   {id:"corgi",name:"Royal Corgi",rarity:"legendary",kind:"critter",squish:1.05,shape:"wide",body:"#f3c878",shade:"#dba24e",hi:"#ffe6b0",ear:"point",earColor:"#dba24e",earInner:"#fff",nose:true,crown:true,shiny:true},
+  ]},
+ {id:"fruit",name:"Fruit Stand",emoji:"🍓",accent:"#d66a9e",accentD:"#b84e82",boxBg:"#f0a25e",boxLid:"#dd8843",bg1:"#fdf3ec",bg2:"#f9dfd2",unlock:4200,pull:260,
+  pets:[
+   {id:"cherry",name:"Cherry Pop",rarity:"common",kind:"fruit",squish:1.1,shape:"round",body:"#e8556a",shade:"#c33a50",hi:"#f7909e"},
+   {id:"blueberry",name:"Boo Berry",rarity:"common",kind:"fruit",squish:1.15,shape:"round",body:"#7a8fd6",shade:"#5a6fb8",hi:"#a8b8ec",dusting:true},
+   {id:"lemon",name:"Sour Lemon",rarity:"common",kind:"fruit",squish:1.0,shape:"tall",body:"#f6dd5e",shade:"#e0be32",hi:"#fdf0a8"},
+   {id:"peach",name:"Peachy Keen",rarity:"uncommon",kind:"fruit",squish:1.25,shape:"heart",body:"#f9b98a",shade:"#ec9260",hi:"#fdd9bc"},
+   {id:"melon",name:"Melon Chonk",rarity:"uncommon",kind:"fruit",squish:1.05,shape:"wide",body:"#8fce7a",shade:"#67ab52",hi:"#c0e8ae"},
+   {id:"starfruit",name:"Twinkle Starfruit",rarity:"rare",kind:"fruit",squish:1.1,shape:"star",body:"#f5d76b",shade:"#dcb43c",hi:"#fbeaae",glossy:true},
+   {id:"dragonf",name:"Dragonfruit Dream",rarity:"epic",kind:"fruit",squish:1.15,shape:"tall",body:"#ec5f9a",shade:"#c93f7c",hi:"#f79ec4",starry:true},
+   {id:"goldpine",name:"Golden Pineapple",rarity:"legendary",kind:"fruit",squish:1.0,shape:"square",body:"#f2c04e",shade:"#d59a24",hi:"#fbe29a",crown:true,shiny:true},
+  ]},
+ {id:"ocean",name:"Ocean Drift",emoji:"🪼",accent:"#5aa0c8",accentD:"#3f83ab",boxBg:"#79c2d4",boxLid:"#58a8bd",bg1:"#ecf7fa",bg2:"#d5ecf2",unlock:9000,pull:520,
+  pets:[
+   {id:"moonjelly",name:"Moon Jelly",rarity:"common",kind:"ocean",squish:1.45,shape:"bell",body:"#cfe6f5",shade:"#a5c9e2",hi:"#eef8ff",glossy:true,wobble:true},
+   {id:"crab",name:"Bashful Crab",rarity:"common",kind:"ocean",squish:0.95,shape:"wide",body:"#ef7a5e",shade:"#d15940",hi:"#f9ac96"},
+   {id:"seabun",name:"Sea Bunny Slug",rarity:"common",kind:"ocean",squish:1.3,shape:"round",body:"#fbf6ee",shade:"#e6dcc8",hi:"#fffdf7",ear:"long",earColor:"#4a3a32",dusting:true},
+   {id:"puffer",name:"Puff Puff",rarity:"uncommon",kind:"ocean",squish:1.2,shape:"star",body:"#f4ce6a",shade:"#dcab3c",hi:"#fae7a8",wideEyes:true},
+   {id:"octo",name:"Octo Bab",rarity:"uncommon",kind:"ocean",squish:1.25,shape:"bell",body:"#c58ae0",shade:"#a568c6",hi:"#e0b8f2"},
+   {id:"narwhal",name:"Star Narwhal",rarity:"rare",kind:"ocean",squish:1.1,shape:"tall",body:"#8fb8e8",shade:"#6a94ce",hi:"#c0d9f6",wideEyes:true},
+   {id:"nebjelly",name:"Nebula Jelly",rarity:"epic",kind:"ocean",squish:1.4,shape:"bell",body:"#6a5ab8",shade:"#4a3d92",hi:"#9a8ce0",starry:true,wobble:true,glossy:true},
+   {id:"goldkoi",name:"Golden Koi",rarity:"legendary",kind:"ocean",squish:1.05,shape:"wide",body:"#f6c45e",shade:"#e09a2c",hi:"#fce4a8",crown:true,shiny:true},
   ]},
 ];
 const catById=id=>CATEGORIES.find(c=>c.id===id);
@@ -243,6 +276,10 @@ const UPGRADES=[
  {id:"combo",emoji:"🔥",name:"Combo Master",desc:l=>`Higher combo cap & slower decay (cap ×${3+l})`,base:90,growth:1.8,max:25},
  {id:"luck",emoji:"🍀",name:"Lucky Charm",desc:l=>`Better odds for rare pets (+${(l*14)}%)`,base:140,growth:2.0,max:8},
  {id:"crit",emoji:"✨",name:"Golden Touch",desc:l=>`${Math.min(30,l*3)}% chance for a ×10 squish`,base:180,growth:1.9,max:10},
+ {id:"hands",emoji:"🖐️",name:"Big Hands",desc:l=>`Bigger squish zone (+${l*8}%)`,base:110,growth:1.7,max:10},
+ {id:"bargain",emoji:"🏷️",name:"Bargain Hunter",desc:l=>`Boxes cost ${l*3}% less`,base:120,growth:1.75,max:10},
+ {id:"shinyluck",emoji:"🌟",name:"Shiny Hunter",desc:l=>`${1+l}% chance pets pop out ✨Shiny (×5 Dough)`,base:250,growth:1.9,max:9},
+ {id:"fever",emoji:"⚡",name:"Fever Time",desc:l=>l===0?"Unlock: max combo triggers 6s of ×2 FEVER":`Fever multiplier ×${(1.5+0.5*l).toFixed(1)}`,base:300,growth:2.0,max:6},
 ];
 const upCost=u=>Math.floor(u.base*Math.pow(u.growth, state.up[u.id]));
 
@@ -256,30 +293,38 @@ const state={
   pressing:false, pointer:{x:0,y:0}, pointerR:0,
   combo:0, comboTimer:0, prevSquash:0, lastSquish:0, lastRelease:-9999,
   autoTimer:0,
+  shiny:{}, ach:[], bestCombo:0, feverT:0,
+  pendingShiny:false, golden:false, goldenT:0, goldenNext:rand(45,80),
 };
-Object.keys(PET_INDEX).forEach(id=>state.pets[id]=0);
+Object.keys(PET_INDEX).forEach(id=>{state.pets[id]=0;state.shiny[id]=0;});
 UPGRADES.forEach(u=>state.up[u.id]=0);
 CATEGORIES.forEach(c=>state.pulls[c.id]=0);
 
-const pullCost=c=>Math.floor(c.pull*Math.pow(1.15,state.pulls[c.id]||0));
+const pullCost=c=>Math.floor(c.pull*Math.pow(1.15,state.pulls[c.id]||0)*boxDiscount());
 const uniqueCount=()=>Object.values(state.pets).filter(v=>v>0).length;
+const shinyCount=()=>Object.values(state.shiny).filter(v=>v>0).length;
 const squishPower=()=>1+state.up.power;
 const helperRate=()=>state.up.helper*0.6;
 const comboCap=()=>3+state.up.combo;
 const comboDecay=()=>1.15+state.up.combo*0.12;
 const critChance=()=>Math.min(0.3,state.up.crit*0.03);
 const collBonus=()=>uniqueCount()*0.02;
+const pokeBoost=()=>1+state.up.hands*0.08;
+const boxDiscount=()=>1-state.up.bargain*0.03;
+const shinyChance=()=>(1+state.up.shinyluck)*0.01;
+const feverMult=()=>state.up.fever>0?1.5+0.5*state.up.fever:1;
 
 /* ---------------- Persistence (best-effort) ---------------- */
-const SAVE_KEY="squishy_pets_v2";
+const SAVE_KEY="squishy_pets_v3",LEGACY_KEY="squishy_pets_v2";
 const hasStore=()=>{try{return!!(window.storage&&typeof window.storage.get==="function");}catch(e){return false;}};
-function serialize(){return JSON.stringify({d:state.dough,b:state.boxes,p:state.pets,u:state.up,k:Object.keys(state.unlocked),pl:state.pulls,t:Date.now()});}
+function serialize(){return JSON.stringify({d:state.dough,b:state.boxes,p:state.pets,u:state.up,k:Object.keys(state.unlocked),pl:state.pulls,sh:state.shiny,ach:state.ach,bc:state.bestCombo,t:Date.now()});}
 let saveT=null;
 function save(){ if(!hasStore())return; clearTimeout(saveT); saveT=setTimeout(()=>{ try{window.storage.set(SAVE_KEY,serialize(),false).catch(()=>{});}catch(e){} },400); }
 async function loadGame(){
   if(!hasStore())return;
   try{
-    const r=await window.storage.get(SAVE_KEY,false);
+    let r=await window.storage.get(SAVE_KEY,false);
+    if(!(r&&r.value))r=await window.storage.get(LEGACY_KEY,false);
     if(r&&r.value){
       const s=JSON.parse(r.value);
       state.dough=s.d||0; state.boxes=s.b||0;
@@ -287,6 +332,9 @@ async function loadGame(){
       if(s.u)for(const id in s.u)if(id in state.up)state.up[id]=s.u[id];
       if(s.k)s.k.forEach(id=>{if(catById(id))state.unlocked[id]=true;});
       if(s.pl)for(const id in s.pl)if(id in state.pulls)state.pulls[id]=s.pl[id];
+      if(s.sh)for(const id in s.sh)if(id in state.shiny)state.shiny[id]=s.sh[id];
+      if(Array.isArray(s.ach))state.ach=s.ach.filter(id=>ACH.some(a=>a.id===id));
+      state.bestCombo=s.bc||0;
       // offline idle earnings (capped 4h)
       const elapsed=clamp((Date.now()-(s.t||Date.now()))/1000,0,4*3600);
       const off=Math.floor(helperRate()*elapsed);
@@ -316,8 +364,23 @@ function roundRect(x,y,w,h,r){ctx.beginPath();if(ctx.roundRect){ctx.roundRect(x,
 
 /* ---------------- Soft-body Blob ---------------- */
 class Blob{
-  constructor(type){this.type=type;this.N=30;this.scale=baseR*(type.wobble?1.02:1);this.pts=[];this.spawnT=0;this.blinkT=rand(2,5);this.blink=0;this.squashSmooth=0;this.build();}
-  build(){this.pts.length=0;for(let i=0;i<this.N;i++){const a=i/this.N*TAU-Math.PI/2;const rr=1+0.05*Math.cos(a*2);const ox=Math.cos(a)*this.scale*rr*1.06,oy=Math.sin(a)*this.scale*rr*0.92;this.pts.push({x:homeX+ox,y:homeY+oy,vx:0,vy:0,ox,oy});}this.restArea=this._area(this.pts.map(p=>({x:p.ox,y:p.oy})));this.cx=homeX;this.cy=homeY;this.bb={minX:homeX-this.scale,maxX:homeX+this.scale,minY:homeY-this.scale,maxY:homeY+this.scale,w:this.scale*2,h:this.scale*2};}
+  constructor(type,sparkly){this.type=type;this.sparkly=!!sparkly;this.N=30;this.scale=baseR*(type.wobble?1.02:1);this.pts=[];this.spawnT=0;this.blinkT=rand(2,5);this.blink=0;this.squashSmooth=0;this.build();}
+  build(){this.pts.length=0;const shape=this.type.shape||(this.type.kind==="sushi"?"wide":"round");
+    const wrap=(x,c)=>{let d=Math.abs(x-c)%TAU;return Math.min(d,TAU-d);};
+    const g=(x,c,w)=>Math.exp(-Math.pow(wrap(x,c)/w,2));
+    for(let i=0;i<this.N;i++){const a=i/this.N*TAU-Math.PI/2;let rr=1+0.05*Math.cos(a*2),mx=1.06,my=0.92;
+      if(shape==="tall"){mx=0.86;my=1.14;rr=1+0.04*Math.cos(a*2)+0.05*Math.sin(a);}
+      else if(shape==="wide"){mx=1.28;my=0.76;}
+      else if(shape==="star"){rr=1+0.15*Math.cos(a*5);mx=1.02;my=0.94;}
+      else if(shape==="square"){const c2=Math.abs(Math.cos(a)),s2=Math.abs(Math.sin(a));rr=Math.pow(c2*c2*c2*c2+s2*s2*s2*s2,-0.25);mx=0.88;my=0.78;}
+      else if(shape==="heart"){rr=1+0.12*Math.sin(a)+0.14*(g(a,-Math.PI/2-0.85,0.55)+g(a,-Math.PI/2+0.85,0.55))-0.32*g(a,-Math.PI/2,0.3);mx=1.02;my=0.95;}
+      else if(shape==="pear"){rr=1+0.09*Math.sin(a);mx=1.0;my=1.0;}
+      else if(shape==="bell"){mx=1.1;my=Math.sin(a)>0?0.62:0.98;rr=1+(Math.sin(a)>0.3?0.05*Math.cos(a*7):0.04*Math.cos(a*2));}
+      const ox=Math.cos(a)*this.scale*rr*mx,oy=Math.sin(a)*this.scale*rr*my;
+      this.pts.push({x:homeX+ox,y:homeY+oy,vx:0,vy:0,ox,oy});}
+    this.restArea=this._area(this.pts.map(p=>({x:p.ox,y:p.oy})));
+    let mnY=1e9,mxY=-1e9;for(const p of this.pts){if(p.oy<mnY)mnY=p.oy;if(p.oy>mxY)mxY=p.oy;}this.restH=mxY-mnY;
+    this.cx=homeX;this.cy=homeY;this.bb={minX:homeX-this.scale,maxX:homeX+this.scale,minY:homeY-this.scale,maxY:homeY+this.scale,w:this.scale*2,h:this.scale*2};}
   _area(p){let a=0;for(let i=0;i<p.length;i++){const q=p[i],r=p[(i+1)%p.length];a+=q.x*r.y-r.x*q.y;}return Math.abs(a)/2;}
   centroid(){let x=0,y=0;for(const p of this.pts){x+=p.x;y+=p.y;}return{x:x/this.N,y:y/this.N};}
   poke(px,py,pr){let n=0;for(const p of this.pts){const dx=p.x-px,dy=p.y-py,d=Math.hypot(dx,dy);if(d<pr&&d>0.001){const push=pr-d;p.x+=dx/d*push;p.y+=dy/d*push;p.vx*=0.4;p.vy*=0.4;n++;}}return n;}
@@ -329,19 +392,20 @@ class Blob{
       p.vx=(p.vx+ax*dt)*DAMP;p.vy=(p.vy+ay*dt)*DAMP;const vm=Math.hypot(p.vx,p.vy);if(vm>1400){p.vx*=1400/vm;p.vy*=1400/vm;}p.x+=p.vx*dt;p.y+=p.vy*dt;}
     let minY=1e9,maxY=-1e9,minX=1e9,maxX=-1e9;for(const p of this.pts){if(p.y<minY)minY=p.y;if(p.y>maxY)maxY=p.y;if(p.x<minX)minX=p.x;if(p.x>maxX)maxX=p.x;}
     this.bb={minX,maxX,minY,maxY,w:maxX-minX,h:maxY-minY};this.cx=(minX+maxX)/2;this.cy=(minY+maxY)/2;
-    const restH=this.scale*1.84,squash=clamp(1-this.bb.h/restH,-0.4,0.7);this.squashSmooth+=(squash-this.squashSmooth)*0.4;
+    const restH=this.restH||this.scale*1.84,squash=clamp(1-this.bb.h/restH,-0.4,0.7);this.squashSmooth+=(squash-this.squashSmooth)*0.4;
     this.blinkT-=dt;if(this.blink>0)this.blink-=dt;else if(this.blinkT<=0){this.blink=0.13;this.blinkT=rand(2.5,5.5);}}
   bodyPath(){const p=this.pts;ctx.beginPath();const m0x=(p[p.length-1].x+p[0].x)/2,m0y=(p[p.length-1].y+p[0].y)/2;ctx.moveTo(m0x,m0y);for(let i=0;i<p.length;i++){const cur=p[i],nxt=p[(i+1)%p.length];ctx.quadraticCurveTo(cur.x,cur.y,(cur.x+nxt.x)/2,(cur.y+nxt.y)/2);}ctx.closePath();}
   draw(ctx,pressing){const t=this.type,bb=this.bb;
     // shadow
     ctx.save();ctx.fillStyle="rgba(120,90,60,.16)";ctx.beginPath();ctx.ellipse(homeX,boxY+baseR*0.05,bb.w*0.42,baseR*0.15,0,0,TAU);ctx.fill();ctx.restore();
     // ears behind
-    if(t.kind==="critter")this.drawEars(ctx,false);
+    if(t.ear)this.drawEars(ctx,false);
     // body
     ctx.save();this.bodyPath();let grad;
     grad=ctx.createRadialGradient(bb.minX+bb.w*0.36,bb.minY+bb.h*0.3,bb.w*0.1,this.cx,this.cy,bb.w*0.75);
     grad.addColorStop(0,t.hi);grad.addColorStop(.45,t.body);grad.addColorStop(1,t.shade);
     ctx.fillStyle=grad;ctx.shadowColor="rgba(150,110,70,.22)";ctx.shadowBlur=18;ctx.shadowOffsetY=8;ctx.fill();ctx.shadowColor="transparent";
+    if(this.sparkly){ctx.strokeStyle="rgba(255,214,90,.85)";ctx.lineWidth=3;ctx.stroke();}
     // clipped features
     ctx.save();ctx.clip();
     if(t.crispy||t.id==="pot"){const cg=ctx.createLinearGradient(0,this.cy,0,bb.maxY);cg.addColorStop(0,"rgba(150,90,30,0)");cg.addColorStop(1,"rgba(120,66,18,.55)");ctx.fillStyle=cg;ctx.fillRect(bb.minX,this.cy,bb.w,bb.h);}
@@ -363,6 +427,7 @@ class Blob{
     this.drawFace(ctx,pressing,easeOut(this.spawnT));
     if(t.crown)this.drawCrown(ctx);
     if(t.spicy)this.drawSpice(ctx);
+    if(this.sparkly){const tm=performance.now()/1000;ctx.save();for(let i=0;i<6;i++){const sa=tm*0.8+i*TAU/6;const sx=this.cx+Math.cos(sa)*bb.w*0.62,sy=this.cy+Math.sin(sa)*bb.h*0.62;const tw=0.5+0.5*Math.sin(tm*3+i*1.3),r1=3+3.5*tw;ctx.globalAlpha=0.3+0.55*tw;ctx.fillStyle=i%2?"#fff6d8":"#ffdf7a";ctx.beginPath();ctx.moveTo(sx,sy-r1);ctx.quadraticCurveTo(sx,sy,sx+r1,sy);ctx.quadraticCurveTo(sx,sy,sx,sy+r1);ctx.quadraticCurveTo(sx,sy,sx-r1,sy);ctx.quadraticCurveTo(sx,sy,sx,sy-r1);ctx.fill();}ctx.restore();}
   }
   drawEars(ctx,front){const bb=this.bb,t=this.type,cx=this.cx,top=bb.minY+bb.h*0.06,ew=bb.w*0.2;ctx.save();ctx.fillStyle=t.earColor||t.shade;
     if(t.ear==="point"){for(const s of[-1,1]){ctx.save();ctx.fillStyle=t.earColor;ctx.beginPath();ctx.moveTo(cx+s*bb.w*0.22,top);ctx.lineTo(cx+s*bb.w*0.42,bb.minY-bb.h*0.28);ctx.lineTo(cx+s*bb.w*0.04,bb.minY-bb.h*0.02);ctx.closePath();ctx.fill();if(t.earInner){ctx.fillStyle=t.earInner;ctx.beginPath();ctx.moveTo(cx+s*bb.w*0.22,top+2);ctx.lineTo(cx+s*bb.w*0.34,bb.minY-bb.h*0.18);ctx.lineTo(cx+s*bb.w*0.1,bb.minY-bb.h*0.01);ctx.closePath();ctx.fill();}ctx.restore();}}
@@ -434,7 +499,7 @@ function drawFloat(){ctx.save();ctx.textAlign="center";for(const f of floats){co
 
 /* ---------------- DOM refs ---------------- */
 const $=id=>document.getElementById(id);
-const elPrompt=$("prompt"),elBanner=$("banner"),elRarityTag=$("rarityTag"),elDumpName=$("dumpName"),elNewFlag=$("newFlag"),elDough=$("doughVal"),elRate=$("rateVal"),elFound=$("cFound"),elTotal=$("cTotal"),elOpenCost=$("openCost"),elOpenLabel=$("openLabel"),elOpenBtn=$("openBtn"),elToast=$("toast"),elCatStrip=$("catstrip");
+const elPrompt=$("prompt"),elBanner=$("banner"),elRarityTag=$("rarityTag"),elDumpName=$("dumpName"),elNewFlag=$("newFlag"),elDough=$("doughVal"),elRate=$("rateVal"),elFound=$("cFound"),elShiny=$("cShiny"),elTotal=$("cTotal"),elOpenCost=$("openCost"),elOpenLabel=$("openLabel"),elOpenBtn=$("openBtn"),elToast=$("toast"),elCatStrip=$("catstrip");
 elTotal.textContent=TOTAL_PETS;
 
 let toastT=null;
@@ -442,9 +507,9 @@ function showToast(msg){elToast.textContent=msg;elToast.classList.add("show");cl
 
 function applyTheme(c){document.documentElement.style.setProperty("--accent",c.accent);elOpenBtn.style.background=c.accent;elOpenBtn.style.boxShadow="0 5px 0 "+c.accentD;document.body.style.background=`radial-gradient(120% 90% at 50% 6%, ${c.bg1} 0%, ${c.bg2} 100%)`;}
 
-function updateHUD(){elDough.textContent=fmt(state.dough);elRate.textContent=helperRate().toFixed(1);elFound.textContent=uniqueCount();
-  const cost=pullCost(state.cat);elOpenCost.textContent=fmt(cost);elOpenLabel.textContent="Open "+state.cat.emoji+" Box";
-  const can=state.dough>=cost&&state.unlocked[state.cat.id];elOpenBtn.classList.toggle("disabled",!can);}
+function updateHUD(){elDough.textContent=fmt(state.dough);elRate.textContent=helperRate().toFixed(1);elFound.textContent=uniqueCount();elShiny.textContent=shinyCount();
+  const cost=pullCost(state.cat);elOpenCost.textContent=state.golden?"FREE ✨":fmt(cost);elOpenLabel.textContent=state.golden?"GOLDEN BOX!":"Open "+state.cat.emoji+" Box";
+  const can=state.unlocked[state.cat.id]&&(state.golden||state.dough>=cost);elOpenBtn.classList.toggle("disabled",!can);}
 
 function buildCatStrip(){elCatStrip.innerHTML="";CATEGORIES.forEach(c=>{const d=document.createElement("div");d.className="cat"+(c.id===state.cat.id?" active":"")+(state.unlocked[c.id]?"":" locked");
   d.innerHTML=`<span class="e">${c.emoji}</span><span>${c.name.split(" ")[0]}</span>`+(state.unlocked[c.id]?"":`<span class="lock">🔒${fmt(c.unlock)}</span>`);
@@ -453,7 +518,7 @@ function refreshCatStrip(){[...elCatStrip.children].forEach((el,i)=>{const c=CAT
 
 function selectCat(c){Sfx.init();
   if(!state.unlocked[c.id]){
-    if(state.dough>=c.unlock){state.dough-=c.unlock;state.unlocked[c.id]=true;Sfx.coin();showToast("Unlocked "+c.name+"! 🎉");refreshCatStrip();save();}
+    if(state.dough>=c.unlock){state.dough-=c.unlock;state.unlocked[c.id]=true;Sfx.coin();showToast("Unlocked "+c.name+"! 🎉");refreshCatStrip();checkAch();save();}
     else{Sfx.buzz();showToast("Need 🥟"+fmt(c.unlock)+" to unlock "+c.name);updateHUD();return;}
   }
   state.cat=c;applyTheme(c);refreshCatStrip();updateHUD();
@@ -466,29 +531,31 @@ function attemptOpen(){
   if(state.mode==="opening")return;
   const c=state.cat;
   if(!state.unlocked[c.id]){selectCat(c);return;}
-  const cost=pullCost(c);
+  const golden=state.golden,cost=golden?0:pullCost(c);
   if(state.dough<cost){Sfx.buzz();showToast("Need 🥟"+fmt(cost)+" to open");return;}
   state.dough-=cost;state.boxes++;state.pulls[c.id]=(state.pulls[c.id]||0)+1;Sfx.thud();
-  // roll pet
-  state.pendingPet=rollPet(c);state.pendingNew=state.pets[state.pendingPet.id]===0;
+  if(golden){state.golden=false;state.goldenT=0;state.goldenNext=rand(50,90);}
+  // roll pet (golden box guarantees Rare or better)
+  state.pendingPet=rollPet(c,golden);state.pendingShiny=Math.random()<shinyChance();state.pendingNew=state.pets[state.pendingPet.id]===0;
   state.blob=null;state.mode="opening";state.openT=0;state.lidLift=0;state.boxAlpha=1;state.boxScale=1;state._puff=false;
   elBanner.classList.remove("show");elPrompt.style.opacity=0;updateHUD();save();
 }
-function rollPet(c){
+function rollPet(c,guaranteeRare){
   const luck=state.up.luck;let total=0;const w={};
-  for(const k in RARITY){const m=k==="common"?1:(1+luck*0.14);w[k]=RARITY[k].weight*m;total+=w[k];}
-  let r=Math.random()*total,chosen="common";for(const k in RARITY){r-=w[k];if(r<=0){chosen=k;break;}}
+  for(const k in RARITY){if(guaranteeRare&&(k==="common"||k==="uncommon")){w[k]=0;continue;}const m=k==="common"?1:(1+luck*0.14);w[k]=RARITY[k].weight*m;total+=w[k];}
+  let r=Math.random()*total,chosen=guaranteeRare?"rare":"common";for(const k in RARITY){r-=w[k];if(r<=0&&w[k]>0){chosen=k;break;}}
   const pool=c.pets.filter(p=>p.rarity===chosen);return pool[Math.floor(Math.random()*pool.length)]||c.pets[0];
 }
 function reveal(){
-  const p=state.pendingPet,isNew=state.pendingNew;
-  state.pets[p.id]++;state.blob=new Blob(p);state.hop=baseR*1.3;state.mode="play";
-  state.flash=p.rarity==="legendary"?1:p.rarity==="epic"?0.5:0;Sfx.pop();
-  if(p.rarity==="legendary")setTimeout(()=>Sfx.sparkle(),180);
-  const rc=RARITY[p.rarity];burst(rc.confetti,[p.body,p.shade||p.body,"#fff3d6",rc.color]);
-  elRarityTag.textContent=rc.label;elRarityTag.style.background=rc.color;elDumpName.textContent=p.name;elNewFlag.style.display=isNew?"inline-block":"none";
+  const p=state.pendingPet,isNew=state.pendingNew,shiny=state.pendingShiny;
+  state.pets[p.id]++;if(shiny)state.shiny[p.id]=(state.shiny[p.id]||0)+1;
+  state.blob=new Blob(p,shiny);state.hop=baseR*1.3;state.mode="play";
+  state.flash=(shiny||p.rarity==="legendary")?1:p.rarity==="epic"?0.5:0;Sfx.pop();
+  if(shiny||p.rarity==="legendary")setTimeout(()=>Sfx.sparkle(),180);
+  const rc=RARITY[p.rarity];burst(rc.confetti+(shiny?60:0),shiny?["#ffdf7a","#fff6d8","#f0a92e",p.body]:[p.body,p.shade||p.body,"#fff3d6",rc.color]);
+  elRarityTag.textContent=(shiny?"✨ SHINY ":"")+rc.label;elRarityTag.style.background=shiny?"#f0a92e":rc.color;elDumpName.textContent=p.name;elNewFlag.style.display=isNew?"inline-block":"none";
   elBanner.classList.add("show");clearTimeout(state._bt);state._bt=setTimeout(()=>elBanner.classList.remove("show"),2400);
-  updateHUD();save();
+  checkAch();updateHUD();save();
 }
 
 /* ---------------- earning ---------------- */
@@ -496,18 +563,22 @@ function doSquishEarn(){
   if(!state.blob)return;
   state.combo++;state.comboTimer=comboDecay();
   const cm=Math.min(comboCap(),1+state.combo*0.2);
+  state.bestCombo=Math.max(state.bestCombo,cm);
+  if(cm>=comboCap()&&state.up.fever>0&&state.feverT<=0){state.feverT=6;spawnFloat("🔥 FEVER ×"+feverMult().toFixed(1)+"!",true);Sfx.sparkle();}
   let amt=squishPower()*cm*RARITY[state.blob.type.rarity].mult*(1+collBonus());
+  if(state.blob.sparkly)amt*=5;
+  if(state.feverT>0)amt*=feverMult();
   let crit=false;if(Math.random()<critChance()){amt*=10;crit=true;}
   amt=Math.max(1,Math.round(amt));
   state.dough+=amt;spawnFloat("+"+fmt(amt)+(crit?" ✨":(state.combo>2?" x"+cm.toFixed(1):"")),crit);
   Sfx.squish(clamp(0.4+state.blob.squashSmooth,0.4,1));
-  updateHUD();save();
+  checkAch();updateHUD();save();
 }
 
 /* ---------------- pointer ---------------- */
 const getPos=e=>{const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY};};
 function onDown(e){e.preventDefault();Sfx.init();const pos=getPos(e);state.pointer=pos;
-  if(state.mode==="play"&&state.blob){if(Math.hypot(pos.x-state.blob.cx,pos.y-state.blob.cy)<baseR*2.4){state.pressing=true;state.pointerR=baseR*0.42;state.holdTimer=0;state.blob.squishImpulse(1);doSquishEarn();return;}}
+  if(state.mode==="play"&&state.blob){if(Math.hypot(pos.x-state.blob.cx,pos.y-state.blob.cy)<baseR*2.4){state.pressing=true;state.pointerR=baseR*0.42*pokeBoost();state.holdTimer=0;state.blob.squishImpulse(1);doSquishEarn();return;}}
   if(state.mode==="box"){if(Math.hypot(pos.x-homeX,pos.y-boxY)<baseR*1.8){attemptOpen();}}
 }
 function onMove(e){if(!state.pressing)return;e.preventDefault();state.pointer=getPos(e);}
@@ -536,12 +607,35 @@ function openShelf(){Sfx.init();const list=$("shelfList");list.innerHTML="";
     const g=document.createElement("div");g.className="catgroup";
     g.innerHTML=`<h3>${c.emoji} ${c.name} <span class="ct">${found}/${c.pets.length}</span></h3>`;
     const grid=document.createElement("div");grid.className="grid";
-    c.pets.forEach(p=>{const count=state.pets[p.id],locked=count===0;const card=document.createElement("div");card.className="card"+(locked?" locked":"");
-      card.innerHTML=`<div class="crare" style="background:${RARITY[p.rarity].color}"></div>${count>0?'<div class="newdot">×'+count+'</div>':''}${miniHTML(p,locked)}<div class="cname">${locked?"???":p.name}</div><div class="ccount">${locked?"undiscovered":RARITY[p.rarity].label}</div>`;
-      if(!locked)card.onclick=()=>{$("shelfModal").classList.remove("show");state.cat=c;applyTheme(c);refreshCatStrip();elBanner.classList.remove("show");state.blob=new Blob(p);state.hop=baseR*0.6;state.mode="play";Sfx.pop();burst(8,[p.body,p.shade||p.body,"#fff3d6"]);updateHUD();};
+    c.pets.forEach(p=>{const count=state.pets[p.id],locked=count===0,hasShiny=(state.shiny[p.id]||0)>0;const card=document.createElement("div");card.className="card"+(locked?" locked":"");
+      card.innerHTML=`<div class="crare" style="background:${RARITY[p.rarity].color}"></div>${count>0?'<div class="newdot">'+(hasShiny?"✨":"")+"×"+count+'</div>':''}${miniHTML(p,locked)}<div class="cname">${locked?"???":p.name}</div><div class="ccount">${locked?"undiscovered":(hasShiny?"✨ ":"")+RARITY[p.rarity].label}</div>`;
+      if(!locked)card.onclick=()=>{$("shelfModal").classList.remove("show");state.cat=c;applyTheme(c);refreshCatStrip();elBanner.classList.remove("show");state.blob=new Blob(p,hasShiny);state.hop=baseR*0.6;state.mode="play";Sfx.pop();burst(8,[p.body,p.shade||p.body,"#fff3d6"]);updateHUD();};
       grid.appendChild(card);});
     g.appendChild(grid);list.appendChild(g);});
   $("shelfModal").classList.add("show");}
+
+/* ---------------- achievements ---------------- */
+const ACH=[
+ {id:"box1",emoji:"📦",name:"First Pop",desc:"Open your first box",reward:15,test:()=>state.boxes>=1},
+ {id:"box25",emoji:"📦",name:"Box Habit",desc:"Open 25 boxes",reward:100,test:()=>state.boxes>=25},
+ {id:"box100",emoji:"🚚",name:"Warehouse Regular",desc:"Open 100 boxes",reward:500,test:()=>state.boxes>=100},
+ {id:"rare1",emoji:"💎",name:"Rare Air",desc:"Collect a Rare or better pet",reward:50,test:()=>Object.keys(PET_INDEX).some(id=>state.pets[id]>0&&["rare","epic","legendary"].includes(PET_INDEX[id].rarity))},
+ {id:"leg1",emoji:"👑",name:"Legend Spotter",desc:"Collect a Legendary pet",reward:400,test:()=>Object.keys(PET_INDEX).some(id=>state.pets[id]>0&&PET_INDEX[id].rarity==="legendary")},
+ {id:"shiny1",emoji:"✨",name:"Shiny!",desc:"Pop out your first ✨Shiny pet",reward:250,test:()=>shinyCount()>=1},
+ {id:"col10",emoji:"🧸",name:"Starter Shelf",desc:"Collect 10 unique pets",reward:75,test:()=>uniqueCount()>=10},
+ {id:"col24",emoji:"📖",name:"Half the Book",desc:"Collect 24 unique pets",reward:250,test:()=>uniqueCount()>=24},
+ {id:"colall",emoji:"🌈",name:"Gotta Squish 'Em All",desc:"Collect every pet",reward:2000,test:()=>uniqueCount()>=TOTAL_PETS},
+ {id:"combo5",emoji:"🔥",name:"Combo Hero",desc:"Reach a ×5 combo",reward:150,test:()=>state.bestCombo>=5},
+ {id:"allbox",emoji:"🗺️",name:"World Tour",desc:"Unlock every box theme",reward:300,test:()=>CATEGORIES.every(c=>state.unlocked[c.id])},
+ {id:"rich",emoji:"💰",name:"Dough Dragon",desc:"Hold 5,000 Dough at once",reward:200,test:()=>state.dough>=5000},
+];
+function checkAch(){let dirty=false;ACH.forEach(a=>{if(state.ach.includes(a.id))return;if(a.test()){state.ach.push(a.id);state.dough+=a.reward;dirty=true;showToast("🏆 "+a.name+"! +"+fmt(a.reward)+" 🥟");Sfx.coin();}});if(dirty){updateHUD();save();}}
+function openAch(){Sfx.init();const list=$("achList");list.innerHTML="";
+  ACH.forEach(a=>{const done=state.ach.includes(a.id);const row=document.createElement("div");row.className="up";row.style.opacity=done?"1":"0.6";
+    row.innerHTML=`<div class="ue">${done?a.emoji:"🔒"}</div><div class="um"><div class="un">${a.name}</div><div class="ud">${a.desc}</div><div class="ulv">${done?"COMPLETE ✓":"Reward: 🥟 "+fmt(a.reward)}</div></div>`;
+    list.appendChild(row);});
+  $("achModal").classList.add("show");}
+$("achBtn").onclick=openAch;
 
 /* ---------------- main loop ---------------- */
 let last=performance.now(),sparkT=0;
@@ -555,6 +649,10 @@ function frame(now){
   updConf(dt);updFloat(dt);if(state.flash>0)state.flash=Math.max(0,state.flash-dt*1.6);
   // combo decay
   if(state.combo>0){state.comboTimer-=dt;if(state.comboTimer<=0)state.combo=0;}
+  // fever countdown
+  if(state.feverT>0)state.feverT-=dt;
+  // golden box event
+  if(!state.golden&&state.mode==="box"){state.goldenT+=dt;if(state.goldenT>=state.goldenNext){state.golden=true;showToast("✨ A GOLDEN BOX appeared — free & extra lucky!");Sfx.sparkle();updateHUD();}}
   // opening anim
   if(state.mode==="opening"){state.openT+=dt;const p=Math.min(1,state.openT/0.6);state.lidLift=easeOut(p);if(state.openT>0.25&&!state._puff){for(let i=0;i<10;i++)spawnSpark();state._puff=true;}if(p>=1)reveal();}
   if(state.hop>0.5)state.hop*=Math.pow(0.001,dt);else state.hop=0;
@@ -575,12 +673,15 @@ function frame(now){
   ctx.save();const tg=ctx.createLinearGradient(0,boxY+baseR*0.8,0,H);tg.addColorStop(0,"rgba(160,130,95,0)");tg.addColorStop(1,"rgba(150,118,82,0.32)");ctx.fillStyle=tg;ctx.fillRect(0,boxY,W,H-boxY);ctx.fillStyle="rgba(255,255,255,.5)";ctx.beginPath();ctx.ellipse(homeX,boxY+baseR*0.85,baseR*1.9,baseR*0.38,0,0,TAU);ctx.fill();ctx.restore();
   drawSpark();
   if(state.mode==="box"||state.mode==="opening"){
+    if(state.golden){const gt=now/300,gr=baseR*(1.7+0.15*Math.sin(gt));ctx.save();const gg=ctx.createRadialGradient(homeX,boxY,0,homeX,boxY,gr*1.6);gg.addColorStop(0,"rgba(255,215,90,.45)");gg.addColorStop(1,"rgba(255,215,90,0)");ctx.fillStyle=gg;ctx.beginPath();ctx.arc(homeX,boxY,gr*1.6,0,TAU);ctx.fill();ctx.restore();}
     drawBox(state.cat,state.lidLift,state.boxAlpha,state.boxScale,state.bob);
-    if(state.mode==="box"){ctx.save();ctx.globalAlpha=0.85;ctx.fillStyle="#fff";ctx.font=`700 ${baseR*0.55}px Fredoka, sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.strokeStyle="rgba(0,0,0,.15)";ctx.lineWidth=4;ctx.strokeText("?",homeX,boxY-baseR*0.05+state.bob);ctx.fillText("?",homeX,boxY-baseR*0.05+state.bob);ctx.restore();}
+    if(state.mode==="box"){const ch=state.golden?"★":"?";ctx.save();ctx.globalAlpha=0.85;ctx.fillStyle=state.golden?"#ffd84d":"#fff";ctx.font=`700 ${baseR*0.55}px Fredoka, sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.strokeStyle="rgba(0,0,0,.15)";ctx.lineWidth=4;ctx.strokeText(ch,homeX,boxY-baseR*0.05+state.bob);ctx.fillText(ch,homeX,boxY-baseR*0.05+state.bob);
+      if(state.golden){ctx.font="700 20px Fredoka, sans-serif";ctx.fillStyle="#f0a92e";ctx.strokeStyle="#fff";ctx.lineWidth=5;const fy=boxY-baseR*1.15+state.bob;ctx.strokeText("✨ FREE — Rare or better! ✨",homeX,fy);ctx.fillText("✨ FREE — Rare or better! ✨",homeX,fy);}
+      ctx.restore();}
   }else{drawBox(state.cat,1,0.8,0.72,state.bob*0.4);}
   if(state.blob)state.blob.draw(ctx,state.pressing);
   // combo badge
-  if(state.combo>1&&state.blob){const cm=Math.min(comboCap(),1+state.combo*0.2);ctx.save();ctx.textAlign="center";ctx.font="700 22px Fredoka, sans-serif";ctx.fillStyle="#ef6f53";ctx.strokeStyle="#fff";ctx.lineWidth=5;const ty=state.blob.bb.minY-baseR*0.5;ctx.strokeText("COMBO x"+cm.toFixed(1),state.blob.cx,ty);ctx.fillText("COMBO x"+cm.toFixed(1),state.blob.cx,ty);ctx.restore();}
+  if(state.combo>1&&state.blob){const cm=Math.min(comboCap(),1+state.combo*0.2);const label=(state.feverT>0?"🔥 ":"")+"COMBO x"+cm.toFixed(1);ctx.save();ctx.textAlign="center";ctx.font="700 22px Fredoka, sans-serif";ctx.fillStyle=state.feverT>0?"#f0a92e":"#ef6f53";ctx.strokeStyle="#fff";ctx.lineWidth=5;const ty=state.blob.bb.minY-baseR*0.5;ctx.strokeText(label,state.blob.cx,ty);ctx.fillText(label,state.blob.cx,ty);ctx.restore();}
   drawConf();drawFloat();
   if(state.flash>0){ctx.save();ctx.globalAlpha=state.flash*0.5;const fg=ctx.createRadialGradient(homeX,homeY,0,homeX,homeY,Math.max(W,H)*0.7);fg.addColorStop(0,"rgba(255,230,150,.8)");fg.addColorStop(1,"rgba(255,230,150,0)");ctx.fillStyle=fg;ctx.fillRect(0,0,W,H);ctx.restore();}
   requestAnimationFrame(frame);
@@ -591,6 +692,7 @@ function frame(now){
   await loadGame();
   resize();
   applyTheme(state.cat);buildCatStrip();updateHUD();
+  checkAch();
   elPrompt.style.opacity=1;
   requestAnimationFrame(frame);
 })();
